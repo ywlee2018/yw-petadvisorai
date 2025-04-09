@@ -20,7 +20,7 @@
 - Streamlit
 
 ## 프로젝트 구조
-
+```
 pet_advisor/
 ├── advisor_agent/
 │   └── agent.py
@@ -45,3 +45,4 @@ pet_advisor/
 ├── main.py                      # Streamlit 앱 메인
 ├── requirements.txt
 └── README.md
+```
