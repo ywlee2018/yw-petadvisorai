@@ -20,7 +20,7 @@ user_question = render_sidebar()
 if user_question:
     with st.spinner("반려견 상담사가 답변 중입니다..."):
         # ✅ Step 1~2: PDF + DuckDuckGo 병합 검색
-        rag_docs = search_similar_documents(user_question)
+        st.session_state["rag_documents"] = search_similar_documents(user_question)
 
         # ✅ Step 3: 답변 생성
         response = get_advisor_response(user_question)
@@ -37,17 +37,23 @@ if user_question:
                 index = 1
                 for doc in documents:
                     source = doc.metadata.get("source", "출처 없음")
+                    if not isinstance(source, str):
+                        source = "출처 없음"
+                        
                     if source in seen_sources:
                         continue
                     seen_sources.add(source)
 
-                    if "pet_guide.pdf" in source:
-                        filename = source.split("/")[-1]  # ✅ 파일명만 추출
-                        st.markdown(f"**📄 문서 {index} (내부 가이드 문서)** 출처:\n`{filename}`")
-                    elif "http" in source:
-                        st.markdown(f"**🌐 문서 {index} (웹 검색 결과)** 출처:\n[{source}]({source})")
+                    if source != "출처 없음":
+                        if "pet_guide.pdf" in source:
+                            filename = source.split("/")[-1]  # ✅ 파일명만 추출
+                            st.markdown(f"**📄 문서 {index} (내부 가이드 문서)** 출처:\n`{filename}`")
+                        elif "http" in source:
+                            st.markdown(f"**🌐 문서 {index} (웹 검색 결과)** 출처:\n[{source}]({source})")
+                        else:
+                            st.markdown(f"**문서 {index} 출처:** {source}")
                     else:
-                        st.markdown(f"**문서 {index} 출처:** {source}")
+                        st.markdown(f"**문서 {index}** (출처 정보 없음)")
                     index += 1
         else:
             st.info("📌 관련된 참고 문서를 찾지 못했습니다.")
