@@ -6,7 +6,6 @@ from advisor_agent.agent import get_advisor_response
 from database.repository import save_qa
 from utils.state_manager import init_session_state
 from retrieval.search_service import search_similar_documents
-from langchain.schema import Document
 
 # 앱 기본 설정
 st.set_page_config(page_title="반려견 상담사", layout="wide")
@@ -18,7 +17,7 @@ init_session_state()
 user_question = render_sidebar()
 
 if user_question:
-    with st.spinner("반려견 상담사가 답변 중입니다..."):
+    with st.spinner("답변을 생성하고 있습니다"):
         # ✅ Step 1~2: PDF + DuckDuckGo 병합 검색
         st.session_state["rag_documents"] = search_similar_documents(user_question)
 
